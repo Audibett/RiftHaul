@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+@theme {
+  --color-brand-orange: #F97316;
+  --color-brand-dark: #1A1A2E;
+}
+
+:root {
+  --brand-orange: #F97316;
+  --brand-dark: #1A1A2E;
+}
+
+body {
+  background-color: #f9fafb;
+}
