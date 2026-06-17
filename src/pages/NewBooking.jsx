@@ -1,10 +1,9 @@
 import { useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import {
-  MapPin, Package, Weight, Calendar, Truck,
+  MapPin, Weight, Calendar, Truck,
   Star, ChevronRight, CheckCircle, AlertCircle,
 } from 'lucide-react'
-import { transporters } from '../data/mockData'
 import { useAuth } from '../context/AuthContext'
 
 const cargoTypes = [
@@ -14,7 +13,6 @@ const cargoTypes = [
 
 const STEPS = ['Cargo Details', 'Review & Confirm', 'Confirmed']
 
-// Rough distance lookup (mock)
 const ROUTE_DISTANCES = {
   'Nakuru': 160,
   'Nairobi': 310,
@@ -54,6 +52,7 @@ function StepIndicator({ currentStep }) {
               {label}
             </span>
           </div>
+
           {i < STEPS.length - 1 && (
             <div className={`w-16 sm:w-24 h-0.5 mb-4 mx-1 transition-all ${
               i < currentStep ? 'bg-green-500' : 'bg-gray-200'
@@ -70,7 +69,9 @@ export default function NewBooking() {
   const navigate = useNavigate()
   const { user, addBooking } = useAuth()
 
-  const transporter = transporters.find((t) => t.id === parseInt(transporterId))
+  const transporter = transporters.find(
+    (t) => t.id === parseInt(transporterId)
+  )
 
   const [step, setStep] = useState(0)
   const [form, setForm] = useState({
@@ -81,6 +82,7 @@ export default function NewBooking() {
     weight: '',
     notes: '',
   })
+
   const [errors, setErrors] = useState({})
   const [confirmedBooking, setConfirmedBooking] = useState(null)
 
@@ -122,35 +124,44 @@ export default function NewBooking() {
       navigate('/login')
       return
     }
+
     const errs = validate()
     if (Object.keys(errs).length > 0) {
       setErrors(errs)
       return
     }
+
     setStep(1)
     window.scrollTo(0, 0)
   }
 
-  function handleConfirm() {
-    const booking = addBooking({
-      transporter: transporter.name,
-      truck: transporter.truck,
-      from: form.from,
-      to: form.to,
-      date: form.date,
-      cargoType: form.cargoType,
-      weight: `${form.weight} tonnes`,
-      amount: estimatedAmount,
-      notes: form.notes,
-    })
-    setConfirmedBooking(booking)
-    setStep(2)
-    window.scrollTo(0, 0)
+  // ✅ FULL UPDATED FUNCTION (REAL API)
+  async function handleConfirm() {
+    try {
+      const booking = await addBooking({
+        transporterProfileId: transporter.id,
+        transporterName: transporter.name,
+        truck: transporter.truck,
+        from: form.from,
+        to: form.to,
+        date: form.date,
+        cargoType: form.cargoType,
+        weight: `${form.weight} tonnes`,
+        notes: form.notes,
+        amount: estimatedAmount,
+      })
+
+      setConfirmedBooking(booking)
+      setStep(2)
+      window.scrollTo(0, 0)
+    } catch (err) {
+      alert(err.message || 'Failed to create booking')
+    }
   }
 
   const today = new Date().toISOString().split('T')[0]
 
-  // ── Step 0: Cargo Details ──────────────────────────────────────
+  // ── STEP 0 ─────────────────────────────────────────────
   if (step === 0) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-10">
@@ -160,252 +171,90 @@ export default function NewBooking() {
 
         <StepIndicator currentStep={0} />
 
-        {/* Transporter summary */}
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-brand-orange flex items-center justify-center text-white font-extrabold text-xl shrink-0">
-            {transporter.name.charAt(0)}
-          </div>
-          <div className="flex-1">
-            <p className="font-bold text-brand-dark">{transporter.name}</p>
-            <p className="text-sm text-gray-500 flex items-center gap-1">
-              <Truck className="w-3 h-3" /> {transporter.truck} · {transporter.capacity}
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-brand-orange font-extrabold">KES {transporter.pricePerKm}/km</p>
-            <p className="text-xs text-yellow-500 flex items-center gap-1 justify-end">
-              <Star className="w-3 h-3 fill-yellow-400" /> {transporter.rating}
-            </p>
-          </div>
-        </div>
-
-        {/* Form */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
           <h2 className="font-bold text-brand-dark text-lg">Cargo Details</h2>
 
-          {/* Pickup */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Pickup Location
             </label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="text"
-                name="from"
-                value={form.from}
-                onChange={handleChange}
-                placeholder="e.g. Eldoret CBD, Langas Market"
-                className={`w-full pl-10 pr-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition ${
-                  errors.from ? 'border-red-400 bg-red-50' : 'border-gray-200'
-                }`}
-              />
-            </div>
-            {errors.from && <p className="text-red-500 text-xs mt-1">{errors.from}</p>}
+            <input
+              type="text"
+              name="from"
+              value={form.from}
+              onChange={handleChange}
+              className="w-full border p-3 rounded-xl"
+            />
+            {errors.from && <p className="text-red-500 text-xs">{errors.from}</p>}
           </div>
 
-          {/* Destination */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Destination
             </label>
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-brand-orange w-4 h-4" />
-              <input
-                type="text"
-                name="to"
-                value={form.to}
-                onChange={handleChange}
-                placeholder="e.g. Nairobi, Kisumu, Nakuru"
-                className={`w-full pl-10 pr-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition ${
-                  errors.to ? 'border-red-400 bg-red-50' : 'border-gray-200'
-                }`}
-              />
-            </div>
-            {errors.to && <p className="text-red-500 text-xs mt-1">{errors.to}</p>}
-            {form.to && (
-              <p className="text-xs text-gray-400 mt-1">
-                Estimated distance: ~{distance} km
-              </p>
-            )}
+            <input
+              type="text"
+              name="to"
+              value={form.to}
+              onChange={handleChange}
+              className="w-full border p-3 rounded-xl"
+            />
+            {errors.to && <p className="text-red-500 text-xs">{errors.to}</p>}
           </div>
 
-          {/* Date */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Pickup Date
             </label>
-            <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="date"
-                name="date"
-                value={form.date}
-                min={today}
-                onChange={handleChange}
-                className={`w-full pl-10 pr-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition ${
-                  errors.date ? 'border-red-400 bg-red-50' : 'border-gray-200'
-                }`}
-              />
-            </div>
-            {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date}</p>}
-          </div>
-
-          {/* Cargo type */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Cargo Type
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {cargoTypes.map((type) => (
-                <button
-                  key={type}
-                  type="button"
-                  onClick={() => {
-                    setForm((prev) => ({ ...prev, cargoType: type }))
-                    if (errors.cargoType) setErrors((prev) => ({ ...prev, cargoType: '' }))
-                  }}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
-                    form.cargoType === type
-                      ? 'bg-brand-orange text-white border-brand-orange'
-                      : 'bg-white text-gray-600 border-gray-300 hover:border-brand-orange'
-                  }`}
-                >
-                  {type}
-                </button>
-              ))}
-            </div>
-            {errors.cargoType && <p className="text-red-500 text-xs mt-1">{errors.cargoType}</p>}
-          </div>
-
-          {/* Weight */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Cargo Weight (tonnes)
-            </label>
-            <div className="relative">
-              <Weight className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
-              <input
-                type="number"
-                name="weight"
-                value={form.weight}
-                onChange={handleChange}
-                placeholder={`Max ${transporter.capacity}`}
-                min="0.1"
-                step="0.1"
-                className={`w-full pl-10 pr-4 py-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition ${
-                  errors.weight ? 'border-red-400 bg-red-50' : 'border-gray-200'
-                }`}
-              />
-            </div>
-            {errors.weight && <p className="text-red-500 text-xs mt-1">{errors.weight}</p>}
-          </div>
-
-          {/* Notes */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Additional Notes <span className="text-gray-400 font-normal">(optional)</span>
-            </label>
-            <textarea
-              name="notes"
-              value={form.notes}
+            <input
+              type="date"
+              name="date"
+              value={form.date}
+              min={today}
               onChange={handleChange}
-              rows={3}
-              placeholder="Fragile items, special handling, access instructions..."
-              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-brand-orange focus:border-transparent transition resize-none"
+              className="w-full border p-3 rounded-xl"
             />
+            {errors.date && <p className="text-red-500 text-xs">{errors.date}</p>}
           </div>
-
-          {/* Price estimate */}
-          {form.to && (
-            <div className="bg-orange-50 border border-orange-100 rounded-xl px-4 py-3 flex items-center justify-between">
-              <div>
-                <p className="text-xs text-gray-500">Estimated Total</p>
-                <p className="text-xs text-gray-400">~{distance} km × KES {transporter.pricePerKm}/km</p>
-              </div>
-              <p className="text-2xl font-extrabold text-brand-orange">
-                KES {estimatedAmount.toLocaleString()}
-              </p>
-            </div>
-          )}
 
           <button
             onClick={handleNext}
-            className="w-full bg-brand-orange hover:bg-orange-600 text-white font-bold py-3 rounded-xl text-sm transition flex items-center justify-center gap-2"
+            className="w-full bg-brand-orange text-white font-bold py-3 rounded-xl"
           >
-            Review Booking <ChevronRight className="w-4 h-4" />
+            Review Booking
           </button>
         </div>
       </div>
     )
   }
 
-  // ── Step 1: Review & Confirm ───────────────────────────────────
+  // ── STEP 1 ─────────────────────────────────────────────
   if (step === 1) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-10">
         <StepIndicator currentStep={1} />
 
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
-          <h2 className="font-bold text-brand-dark text-lg">Review Your Booking</h2>
+        <div className="bg-white p-6 rounded-2xl border">
+          <h2 className="font-bold mb-4">Review Booking</h2>
 
-          {/* Transporter */}
-          <div className="flex items-center gap-4 bg-gray-50 rounded-xl p-4">
-            <div className="w-11 h-11 rounded-full bg-brand-orange flex items-center justify-center text-white font-extrabold text-lg">
-              {transporter.name.charAt(0)}
-            </div>
-            <div>
-              <p className="font-bold text-brand-dark">{transporter.name}</p>
-              <p className="text-sm text-gray-500">{transporter.truck} · {transporter.capacity}</p>
-            </div>
-          </div>
+          <p><strong>From:</strong> {form.from}</p>
+          <p><strong>To:</strong> {form.to}</p>
+          <p><strong>Date:</strong> {form.date}</p>
+          <p><strong>Estimate:</strong> KES {estimatedAmount}</p>
 
-          {/* Details grid */}
-          <div className="divide-y divide-gray-100">
-            {[
-              { label: 'Pickup', value: form.from },
-              { label: 'Destination', value: form.to },
-              { label: 'Date', value: new Date(form.date).toLocaleDateString('en-KE', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) },
-              { label: 'Cargo Type', value: form.cargoType },
-              { label: 'Weight', value: `${form.weight} tonnes` },
-              ...(form.notes ? [{ label: 'Notes', value: form.notes }] : []),
-            ].map(({ label, value }) => (
-              <div key={label} className="flex justify-between py-3 text-sm">
-                <span className="text-gray-500">{label}</span>
-                <span className="font-medium text-brand-dark text-right max-w-[60%]">{value}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Price breakdown */}
-          <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Distance</span>
-              <span>~{distance} km</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Rate</span>
-              <span>KES {transporter.pricePerKm}/km</span>
-            </div>
-            <div className="border-t border-orange-200 pt-2 flex justify-between font-extrabold">
-              <span className="text-brand-dark">Total Estimate</span>
-              <span className="text-brand-orange text-xl">KES {estimatedAmount.toLocaleString()}</span>
-            </div>
-            <p className="text-xs text-gray-400">Final price confirmed by transporter at pickup</p>
-          </div>
-
-          <div className="flex gap-3">
+          <div className="flex gap-3 mt-6">
             <button
               onClick={() => setStep(0)}
-              className="flex-1 border border-gray-200 text-gray-700 font-semibold py-3 rounded-xl hover:bg-gray-50 transition text-sm"
+              className="flex-1 border p-3 rounded-xl"
             >
-              ← Edit
+              Edit
             </button>
+
             <button
               onClick={handleConfirm}
-              className="flex-1 bg-brand-orange hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition text-sm"
+              className="flex-1 bg-brand-orange text-white p-3 rounded-xl"
             >
-              Confirm Booking
+              Confirm
             </button>
           </div>
         </div>
@@ -413,54 +262,27 @@ export default function NewBooking() {
     )
   }
 
-  // ── Step 2: Confirmed ──────────────────────────────────────────
+  // ── STEP 2 ─────────────────────────────────────────────
   return (
-    <div className="max-w-2xl mx-auto px-4 py-10">
+    <div className="max-w-2xl mx-auto px-4 py-10 text-center">
       <StepIndicator currentStep={2} />
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 text-center">
-        <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-          <CheckCircle className="w-10 h-10 text-green-500" />
-        </div>
-        <h2 className="text-2xl font-extrabold text-brand-dark mb-2">Booking Confirmed!</h2>
-        <p className="text-gray-500 mb-1">Your booking ID is</p>
-        <p className="text-brand-orange font-extrabold text-xl mb-4">
-          {confirmedBooking?.id}
-        </p>
-        <p className="text-sm text-gray-500 mb-8">
-          <strong>{transporter.name}</strong> will contact you at your registered phone number
-          to confirm pickup on <strong>{new Date(form.date).toLocaleDateString('en-KE', { weekday: 'long', month: 'long', day: 'numeric' })}</strong>.
-        </p>
+      <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
 
-        {/* Summary card */}
-        <div className="bg-gray-50 rounded-xl p-4 text-left space-y-2 mb-8">
-          {[
-            { label: 'From', value: form.from },
-            { label: 'To', value: form.to },
-            { label: 'Cargo', value: `${form.cargoType} · ${form.weight} tonnes` },
-            { label: 'Estimate', value: `KES ${estimatedAmount.toLocaleString()}` },
-          ].map(({ label, value }) => (
-            <div key={label} className="flex justify-between text-sm">
-              <span className="text-gray-400">{label}</span>
-              <span className="font-medium text-brand-dark">{value}</span>
-            </div>
-          ))}
-        </div>
+      <h2 className="text-2xl font-bold">Booking Confirmed</h2>
 
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Link
-            to="/bookings"
-            className="flex-1 bg-brand-orange hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition text-sm"
-          >
-            View My Bookings
-          </Link>
-          <Link
-            to="/transporters"
-            className="flex-1 border border-gray-200 text-gray-700 font-semibold py-3 rounded-xl hover:bg-gray-50 transition text-sm"
-          >
-            Book Another
-          </Link>
-        </div>
+      <p className="text-gray-500 mt-2">
+        Booking ID: {confirmedBooking?.id}
+      </p>
+
+      <div className="mt-6 flex gap-3">
+        <Link to="/bookings" className="flex-1 bg-brand-orange text-white p-3 rounded-xl">
+          View Bookings
+        </Link>
+
+        <Link to="/transporters" className="flex-1 border p-3 rounded-xl">
+          Book Again
+        </Link>
       </div>
     </div>
   )

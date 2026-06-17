@@ -5,6 +5,7 @@ import {
   Clock, CheckCircle, XCircle, Plus, AlertCircle, ArrowRight
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { useEffect } from 'react'
 
 const STATUS = {
   pending:   { label: 'Pending',    bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', dot: 'bg-yellow-400', bar: 'bg-yellow-400' },
@@ -125,13 +126,20 @@ function BookingCard({ booking, onCancel }) {
 }
 
 export default function Bookings() {
-  const { user, bookings } = useAuth()
+  const { user, bookings, fetchBookings, updateBookingStatus } = useAuth()
   const [activeTab, setActiveTab] = useState('all')
-  const [cancelledIds, setCancelledIds] = useState([])
+  const [pageLoading, setPageLoading] = useState(true)
 
-  const allBookings = bookings.map((b) =>
-    cancelledIds.includes(b.id) ? { ...b, status: 'cancelled' } : b
-  )
+  useEffect(() => {
+  if (!user) {
+    setPageLoading(false)
+    return
+  }
+
+  fetchBookings().finally(() => setPageLoading(false))
+}, [user])
+
+  const allBookings = bookings
 
   const filtered = allBookings.filter((b) => {
     if (activeTab === 'all') return true
@@ -147,11 +155,15 @@ export default function Bookings() {
     cancelled: allBookings.filter((b) => b.status === 'cancelled').length,
   }
 
-  function handleCancel(id) {
-    if (window.confirm('Cancel this booking? This cannot be undone.')) {
-      setCancelledIds((prev) => [...prev, id])
-    }
+  async function handleCancel(id) {
+  if (!window.confirm('Cancel this booking? This cannot be undone.')) return
+
+  try {
+    await updateBookingStatus(id, 'cancelled')
+  } catch (err) {
+    alert(err.message)
   }
+}
 
   if (!user) {
     return (
@@ -201,6 +213,12 @@ export default function Bookings() {
           </div>
         ))}
       </div>
+
+      {pageLoading && (
+  <div className="text-center py-20">
+    <div className="w-10 h-10 border-4 border-brand-orange border-t-transparent rounded-full animate-spin mx-auto" />
+  </div>
+)}
 
       {/* Tabs */}
       <div className="flex gap-1 bg-gray-100 p-1 rounded-xl mb-6 overflow-x-auto">

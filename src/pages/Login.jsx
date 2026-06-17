@@ -20,18 +20,21 @@ export default function Login() {
     if (error) setError('')
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     if (!form.email || !form.password) {
       setError('Please enter your email and password.')
       return
     }
     setLoading(true)
-    setTimeout(() => {
-      const u = login(form.email, form.password, form.role)
-      setLoading(false)
-      navigate(u.role === 'transporter' ? '/dashboard' : '/transporters')
-    }, 700)
+try {
+  const u = await login(form.email, form.password, form.role)
+  navigate(u.role === 'transporter' ? '/dashboard' : '/transporters')
+} catch (err) {
+  setError(err.message)
+} finally {
+  setLoading(false)
+}
   }
 
   return (

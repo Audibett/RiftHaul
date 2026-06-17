@@ -52,14 +52,18 @@ export default function Register() {
     }
   }
 
-  function submit() {
-    setLoading(true)
-    setTimeout(() => {
-      const u = register(form)
-      setLoading(false)
-      navigate(u.role === 'transporter' ? '/dashboard' : '/transporters')
-    }, 700)
+  async function submit() {
+  setLoading(true)
+  try {
+    const u = await register(form)
+    navigate(u.role === 'transporter' ? '/dashboard' : '/transporters')
+  } catch (err) {
+    setError(err.message)
+    setStep(1) // send back to step 1 on error
+  } finally {
+    setLoading(false)
   }
+}
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

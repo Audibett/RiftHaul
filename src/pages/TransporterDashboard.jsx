@@ -6,7 +6,8 @@ import {
   AlertCircle, ArrowRight, ChevronDown, ChevronUp
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
-import { mockBookings, transporters } from '../data/mockData'
+import { api } from '../utils/api'
+import { useEffect } from 'react'
 
 const STATUS = {
   pending:   { label: 'New Request', bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', bar: 'bg-yellow-400' },
@@ -137,17 +138,79 @@ function JobCard({ job, onAccept, onComplete, onDecline }) {
 
 export default function TransporterDashboard() {
   const { user } = useAuth()
-  const profile = transporters[0]
-  const [jobs, setJobs] = useState(mockBookings)
   const [isAvailable, setIsAvailable] = useState(true)
   const [activeTab, setActiveTab] = useState('all')
+  const [jobs, setJobs] = useState([])
+  const [profile, setProfile] = useState(null)
+  const [pageLoading, setPageLoading] = useState(true)
 
-  const accept = (id) => setJobs((p) => p.map((j) => j.id === id ? { ...j, status: 'active' } : j))
-  const complete = (id) => setJobs((p) => p.map((j) => j.id === id ? { ...j, status: 'completed' } : j))
-  const decline = (id) => {
-    if (window.confirm('Decline this job request?'))
-      setJobs((p) => p.map((j) => j.id === id ? { ...j, status: 'declined' } : j))
+  useEffect(() => {
+  if (!user) return
+
+  Promise.all([
+    api.get('/api/bookings/jobs'),
+    api.get('/api/transporters')
+  ])
+    .then(([jobsRes, transportersRes]) => {
+      setJobs(jobsRes.jobs || [])
+
+      const myProfile = transportersRes.transporters.find(
+        (t) => t.userId === user.id
+      )
+
+      setProfile(myProfile || null)
+    })
+    .catch(console.error)
+    .finally(() => setPageLoading(false))
+}, [user])
+
+  async function accept(id) {
+  try {
+    await api.patch(`/api/bookings/${id}/status`, { status: 'active' })
+    setJobs((p) =>
+      p.map((j) => (j.id === id ? { ...j, status: 'active' } : j))
+    )
+  } catch (err) {
+    alert(err.message)
   }
+}
+  async function complete(id) {
+  try {
+    await api.patch(`/api/bookings/${id}/status`, { status: 'completed' })
+    setJobs((p) =>
+      p.map((j) => (j.id === id ? { ...j, status: 'completed' } : j))
+    )
+  } catch (err) {
+    alert(err.message)
+  }
+}
+  async function decline(id) {
+  if (!window.confirm('Decline this job request?')) return
+
+  try {
+    await api.patch(`/api/bookings/${id}/status`, { status: 'declined' })
+    setJobs((p) =>
+      p.map((j) => (j.id === id ? { ...j, status: 'declined' } : j))
+    )
+  } catch (err) {
+    alert(err.message)
+  }
+} 
+
+async function toggleAvailability() {
+  try {
+    const res = await api.patch('/api/transporters/availability', {
+      available: !isAvailable,
+    })
+    setIsAvailable(res.available)
+  } catch (err) {
+    alert(err.message)
+  }
+}
+
+if (pageLoading) {
+  return <div className="p-10 text-center">Loading...</div>
+}
 
   const visible = jobs.filter((j) => {
     if (activeTab === 'all') return j.status !== 'declined'

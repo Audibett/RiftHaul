@@ -1,4 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
+import { useAuth } from './context/AuthContext'
+
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -10,9 +12,24 @@ import Navbar from './components/Navbar'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
+  const { loading } = useAuth()
+
+  // Loading screen while checking auth/session
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-brand-orange border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-gray-400 text-sm">Loading RiftHaul...</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar />
+
       <Routes>
         {/* Public */}
         <Route path="/" element={<Home />} />
@@ -21,37 +38,57 @@ function App() {
         <Route path="/transporters" element={<Transporters />} />
 
         {/* Customer only */}
-        <Route path="/bookings" element={
-          <ProtectedRoute role="customer">
-            <Bookings />
-          </ProtectedRoute>
-        } />
-        <Route path="/book/:transporterId" element={
-          <ProtectedRoute role="customer">
-            <NewBooking />
-          </ProtectedRoute>
-        } />
+        <Route
+          path="/bookings"
+          element={
+            <ProtectedRoute role="customer">
+              <Bookings />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/book/:transporterId"
+          element={
+            <ProtectedRoute role="customer">
+              <NewBooking />
+            </ProtectedRoute>
+          }
+        />
 
         {/* Transporter only */}
-        <Route path="/dashboard" element={
-          <ProtectedRoute role="transporter">
-            <TransporterDashboard />
-          </ProtectedRoute>
-        } />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute role="transporter">
+              <TransporterDashboard />
+            </ProtectedRoute>
+          }
+        />
 
         {/* 404 */}
-        <Route path="*" element={
-          <div className="min-h-screen flex items-center justify-center text-center px-4">
-            <div>
-              <p className="text-7xl font-extrabold text-gray-100 mb-4">404</p>
-              <h2 className="text-2xl font-bold text-brand-dark mb-2">Page not found</h2>
-              <p className="text-gray-500 mb-6">The page you're looking for doesn't exist.</p>
-              <a href="/" className="bg-brand-orange text-white font-bold px-6 py-3 rounded-xl hover:bg-orange-600 transition text-sm">
-                Go Home
-              </a>
+        <Route
+          path="*"
+          element={
+            <div className="min-h-screen flex items-center justify-center text-center px-4">
+              <div>
+                <p className="text-7xl font-extrabold text-gray-100 mb-4">404</p>
+                <h2 className="text-2xl font-bold text-brand-dark mb-2">
+                  Page not found
+                </h2>
+                <p className="text-gray-500 mb-6">
+                  The page you're looking for doesn't exist.
+                </p>
+                <a
+                  href="/"
+                  className="bg-brand-orange text-white font-bold px-6 py-3 rounded-xl hover:bg-orange-600 transition text-sm"
+                >
+                  Go Home
+                </a>
+              </div>
             </div>
-          </div>
-        } />
+          }
+        />
       </Routes>
     </div>
   )

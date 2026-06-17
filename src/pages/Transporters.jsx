@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Search, Star, MapPin, Package, Truck, SlidersHorizontal, X } from 'lucide-react'
-import { transporters } from '../data/mockData'
+import { api } from '../utils/api'
 
 const cargoTypes = ['General', 'Agricultural', 'Electronics', 'Furniture', 'Building Materials', 'Perishables', 'Heavy Machinery']
 const capacities = ['All', '1-2 tonnes', '3-5 tonnes', '10+ tonnes']
@@ -112,8 +112,18 @@ export default function Transporters() {
   const [capacityFilter, setCapacityFilter] = useState('All')
   const [availableOnly, setAvailableOnly] = useState(false)
   const [showFilters, setShowFilters] = useState(false)
+  const [allTransporters, setAllTransporters] = useState([])
+  const [apiLoading, setApiLoading] = useState(true)
+  const [apiError, setApiError] = useState('') 
 
-  const filtered = transporters.filter((t) => {
+  useEffect(() => {
+  api.get('/api/transporters')
+    .then(({ transporters }) => setAllTransporters(transporters))
+    .catch(() => setApiError('Failed to load transporters. Please try again.'))
+    .finally(() => setApiLoading(false))
+}, [])
+
+  const filtered = allTransporters.filter((t) => {
     const s = search.toLowerCase()
     const matchesSearch = !s ||
       t.name.toLowerCase().includes(s) ||
@@ -268,26 +278,51 @@ export default function Transporters() {
         </div>
       )}
 
-      {/* Results */}
-      {filtered.length > 0 ? (
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {filtered.map((t) => <TransporterCard key={t.id} t={t} />)}
-        </div>
-      ) : (
-        <div className="text-center py-24">
-          <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Truck className="w-8 h-8 text-gray-300" />
-          </div>
-          <p className="font-bold text-gray-600 text-lg">No transporters found</p>
-          <p className="text-gray-400 text-sm mt-1 mb-5">Try adjusting your search or filters</p>
-          <button
-            onClick={() => { clearAll(); setSearch('') }}
-            className="bg-brand-orange hover:bg-orange-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition"
-          >
-            Clear all filters
-          </button>
-        </div>
-      )}
+{/* Results */}
+
+{apiLoading && (
+  <div className="text-center py-20">
+    <div className="w-10 h-10 border-4 border-brand-orange border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+    <p className="text-gray-400 text-sm">Loading transporters...</p>
+  </div>
+)}
+
+{apiError && (
+  <div className="text-center py-20">
+    <p className="text-red-500 font-semibold">{apiError}</p>
+    <button
+      onClick={() => window.location.reload()}
+      className="mt-4 text-brand-orange hover:underline text-sm"
+    >
+      Try again
+    </button>
+  </div>
+)}
+
+{!apiLoading && !apiError && filtered.length > 0 && (
+  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {filtered.map((t) => <TransporterCard key={t.id} t={t} />)}
+  </div>
+)}
+
+{!apiLoading && !apiError && filtered.length === 0 && (
+  <div className="text-center py-24">
+    <div className="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+      <Truck className="w-8 h-8 text-gray-300" />
+    </div>
+    <p className="font-bold text-gray-600 text-lg">No transporters found</p>
+    <p className="text-gray-400 text-sm mt-1 mb-5">Try adjusting your search or filters</p>
+    <button
+      onClick={() => {
+        clearAll()
+        setSearch('')
+      }}
+      className="bg-brand-orange hover:bg-orange-500 text-white font-bold px-6 py-2.5 rounded-xl text-sm transition"
+    >
+      Clear all filters
+    </button>
+  </div>
+)}
     </div>
   )
-}
+} 
