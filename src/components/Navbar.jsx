@@ -46,6 +46,7 @@ export default function Navbar() {
         {/* Desktop nav */}
         <div className="hidden md:flex items-center gap-7">
           {navLink('/transporters', 'Find transporters')}
+          {user?.role === 'customer' && navLink('/customer-dashboard', 'Dashboard')}
           {user?.role === 'customer' && navLink('/bookings', 'My bookings')}
           {user?.role === 'transporter' && navLink('/dashboard', 'Dashboard')}
         </div>

@@ -29,7 +29,7 @@ export default function Login() {
     setLoading(true)
 try {
   const u = await login(form.email, form.password, form.role)
-  navigate(u.role === 'transporter' ? '/dashboard' : '/transporters')
+  navigate(u.role === 'transporter' ? '/dashboard' : '/customer-dashboard', { replace: true })
 } catch (err) {
   setError(err.message)
 } finally {

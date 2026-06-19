@@ -90,9 +90,15 @@ export default function NewBooking() {
       .finally(() => setLoadingTransporter(false))
   }, [transporterId])
 
-  const distance        = form.to ? getEstimatedDistance(form.to) : 0
-  const estimatedAmount = transporter ? Math.round(distance * transporter.pricePerKm) : 0
-  const today           = new Date().toISOString().split('T')[0]
+  // ── Price calculation: distance cost + weight cost ────────────────
+  const distance = form.to ? getEstimatedDistance(form.to) : 0
+  const weightTonnes = parseFloat(form.weight) || 0
+
+  const distanceCost = transporter ? distance * transporter.pricePerKm : 0
+  const weightCost = transporter ? weightTonnes * (transporter.pricePerTonne || 0) : 0
+  const estimatedAmount = transporter ? Math.round(distanceCost + weightCost) : 0
+
+  const today = new Date().toISOString().split('T')[0]
 
   function handleChange(e) {
     const { name, value } = e.target
@@ -131,7 +137,7 @@ export default function NewBooking() {
         cargoType:            form.cargoType,
         weight:               `${form.weight} tonnes`,
         notes:                form.notes,
-        amount:               estimatedAmount,
+        distanceKm:           distance,
       })
       setConfirmedBooking(booking)
       setStep(2)
@@ -200,6 +206,9 @@ export default function NewBooking() {
           <div className="text-right shrink-0">
             <p className="text-brand-orange font-extrabold">
               KES {transporter.pricePerKm}/km
+            </p>
+            <p className="text-xs text-gray-400 mt-0.5">
+              + KES {transporter.pricePerTonne || 0}/tonne
             </p>
             <p className="text-xs text-yellow-500 flex items-center gap-1 justify-end mt-0.5">
               <Star className="w-3 h-3 fill-yellow-400" />
@@ -348,18 +357,27 @@ export default function NewBooking() {
             />
           </div>
 
-          {/* Price estimate */}
+          {/* Price estimate — now shows distance + weight breakdown */}
           {form.to && (
-            <div className="bg-orange-50 border border-orange-100 rounded-xl px-4 py-3 flex items-center justify-between">
-              <div>
+            <div className="bg-orange-50 border border-orange-100 rounded-xl px-4 py-3 space-y-1.5">
+              <div className="flex items-center justify-between">
                 <p className="text-xs text-gray-500">Estimated Total</p>
-                <p className="text-xs text-gray-400">
-                  ~{distance} km × KES {transporter.pricePerKm}/km
+                <p className="text-2xl font-extrabold text-brand-orange">
+                  KES {estimatedAmount.toLocaleString()}
                 </p>
               </div>
-              <p className="text-2xl font-extrabold text-brand-orange">
-                KES {estimatedAmount.toLocaleString()}
-              </p>
+              <div className="text-xs text-gray-400 space-y-0.5">
+                <p>
+                  Distance: ~{distance} km × KES {transporter.pricePerKm}/km = KES{' '}
+                  {Math.round(distanceCost).toLocaleString()}
+                </p>
+                {weightTonnes > 0 && (
+                  <p>
+                    Weight: {weightTonnes} tonnes × KES {transporter.pricePerTonne || 0}/tonne = KES{' '}
+                    {Math.round(weightCost).toLocaleString()}
+                  </p>
+                )}
+              </div>
             </div>
           )}
 
@@ -413,15 +431,21 @@ export default function NewBooking() {
             ))}
           </div>
 
-          {/* Price breakdown */}
+          {/* Price breakdown — now shows distance + weight */}
           <div className="bg-orange-50 border border-orange-100 rounded-xl p-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Distance</span>
-              <span>~{distance} km</span>
+              <span className="text-gray-500">Distance cost</span>
+              <span>
+                ~{distance} km × KES {transporter.pricePerKm} = KES{' '}
+                {Math.round(distanceCost).toLocaleString()}
+              </span>
             </div>
             <div className="flex justify-between text-sm">
-              <span className="text-gray-500">Rate</span>
-              <span>KES {transporter.pricePerKm}/km</span>
+              <span className="text-gray-500">Weight cost</span>
+              <span>
+                {weightTonnes} t × KES {transporter.pricePerTonne || 0} = KES{' '}
+                {Math.round(weightCost).toLocaleString()}
+              </span>
             </div>
             <div className="border-t border-orange-200 pt-2 flex justify-between font-extrabold">
               <span className="text-brand-dark">Total Estimate</span>

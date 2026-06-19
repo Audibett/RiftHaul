@@ -18,7 +18,7 @@ export default function Register() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (user) navigate(user.role === 'transporter' ? '/dashboard' : '/transporters')
+    if (user) navigate(user.role === 'transporter' ? '/dashboard' : '/customer-dashboard', { replace: true })
   }, [user])
 
   function handleChange(e) {
@@ -56,7 +56,7 @@ export default function Register() {
   setLoading(true)
   try {
     const u = await register(form)
-    navigate(u.role === 'transporter' ? '/dashboard' : '/transporters')
+    navigate(u.role === 'transporter' ? '/dashboard' : '/customer-dashboard', { replace: true })
   } catch (err) {
     setError(err.message)
     setStep(1) // send back to step 1 on error

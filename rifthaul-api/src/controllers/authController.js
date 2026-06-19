@@ -93,7 +93,13 @@ async function register(req, res) {
 // ── LOGIN ───────────────────────────────────────────────
 async function login(req, res) {
   try {
-    const { email, password } = req.body
+    const { email, password, role } = req.body
+
+    if (!email || !password) {
+      return res.status(400).json({
+        error: 'Email and password are required.'
+      })
+    }
 
     const { data: user, error } = await supabase
       .from('users')
@@ -103,7 +109,7 @@ async function login(req, res) {
 
     if (error || !user) {
       return res.status(401).json({
-        error: 'Invalid credentials'
+        error: 'Invalid email or password.'
       })
     }
 
@@ -111,10 +117,20 @@ async function login(req, res) {
 
     if (!valid) {
       return res.status(401).json({
-        error: 'Invalid credentials'
+        error: 'Invalid email or password.'
       })
     }
 
+    // Check selected role against actual role
+    if (
+  role &&
+  ['customer', 'transporter'].includes(role) &&
+  user.role !== role
+) {
+  return res.status(403).json({
+    error: `This account is registered as a ${user.role}. Please select "${user.role}" to sign in.`
+  })
+}
     const token = signToken(user)
 
     return res.status(200).json({
@@ -131,7 +147,7 @@ async function login(req, res) {
     console.error('LOGIN ERROR:', err)
 
     return res.status(500).json({
-      error: err.message
+      error: 'Login failed. Please try again.'
     })
   }
 }
