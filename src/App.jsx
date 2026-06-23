@@ -12,6 +12,7 @@ import NewBooking from './pages/NewBooking'
 import CustomerDashboard from './pages/CustomerDashboard'
 import TransporterDashboard from './pages/TransporterDashboard'
 import { Truck } from 'lucide-react'
+import PaymentCallback from './pages/PaymentCallback'
 
 function App() {
   const { loading } = useAuth()
@@ -41,6 +42,7 @@ function App() {
         <Route path="/login"        element={<Login />} />
         <Route path="/register"     element={<Register />} />
         <Route path="/transporters" element={<Transporters />} />
+        <Route path="/payment/callback" element={<PaymentCallback />} />
 
         {/* Customer only */}
         <Route path="/customer-dashboard" element={

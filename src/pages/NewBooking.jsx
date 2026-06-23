@@ -79,6 +79,8 @@ export default function NewBooking() {
   const [errors, setErrors]                   = useState({})
   const [confirmedBooking, setConfirmedBooking] = useState(null)
   const [submitting, setSubmitting]           = useState(false)
+  const [payLoading, setPayLoading] = useState(false)
+  const [payError, setPayError] = useState('')
 
   // Fetch the transporter from the API using the ID from the URL
   useEffect(() => {
@@ -148,6 +150,21 @@ export default function NewBooking() {
       setSubmitting(false)
     }
   }
+
+  async function handlePay() {
+  setPayLoading(true)
+
+  try {
+    const { redirectUrl } = await api.post('/api/payments/initiate', {
+      bookingId: confirmedBooking?.id,
+    })
+
+    window.location.href = redirectUrl
+  } catch (err) {
+    setPayError(err.message || 'Payment initiation failed.')
+    setPayLoading(false)
+  }
+}
 
   // ── Loading state ──────────────────────────────────────────────
   if (loadingTransporter) {
@@ -523,20 +540,35 @@ export default function NewBooking() {
           ))}
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Link
-            to="/bookings"
-            className="flex-1 bg-brand-orange hover:bg-orange-500 text-white font-bold py-3 rounded-xl transition text-sm"
-          >
-            View My Bookings
-          </Link>
-          <Link
-            to="/transporters"
-            className="flex-1 border border-gray-200 text-gray-700 font-semibold py-3 rounded-xl hover:bg-gray-50 transition text-sm"
-          >
-            Book Another
-          </Link>
-        </div>
+        {payError && (
+  <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-xl px-4 py-3 mb-4">
+    {payError}
+  </div>
+)}
+
+<div className="flex flex-col sm:flex-row gap-3">
+  <button
+    onClick={handlePay}
+    disabled={payLoading}
+    className="flex-1 bg-brand-orange hover:bg-orange-500 disabled:opacity-60 text-white font-bold py-3 rounded-xl transition text-sm flex items-center justify-center gap-2"
+  >
+    {payLoading ? (
+      <>
+        <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+        Redirecting to payment...
+      </>
+    ) : (
+      '💳 Pay Commission Now'
+    )}
+  </button>
+
+  <Link
+    to="/bookings"
+    className="flex-1 text-center border border-gray-200 text-gray-700 font-semibold py-3 rounded-xl hover:bg-gray-50 transition text-sm"
+  >
+    Pay Later
+  </Link>
+</div>
       </div>
     </div>
   )
