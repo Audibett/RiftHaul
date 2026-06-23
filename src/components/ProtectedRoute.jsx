@@ -10,7 +10,12 @@ export default function ProtectedRoute({ children, role }) {
   }
 
   if (role && user.role !== role) {
-    return <Navigate to={user.role === 'transporter' ? '/dashboard' : '/transporters'} replace />
+    const redirect =
+      user.role === 'admin'        ? '/admin' :
+      user.role === 'transporter'  ? '/dashboard' :
+      '/customer-dashboard'
+
+    return <Navigate to={redirect} replace />
   }
 
   return children

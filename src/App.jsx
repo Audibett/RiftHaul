@@ -1,3 +1,4 @@
+import AdminDashboard from './pages/AdminDashboard'
 import { Routes, Route } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 import Navbar from './components/Navbar'
@@ -56,6 +57,12 @@ function App() {
           <ProtectedRoute role="customer">
             <NewBooking />
           </ProtectedRoute>
+        } />
+
+        <Route path="/admin" element={
+         <ProtectedRoute role="admin">
+           <AdminDashboard />
+         </ProtectedRoute>
         } />
 
         {/* Transporter only */}

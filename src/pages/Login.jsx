@@ -4,12 +4,12 @@ import { Truck, Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 
 export default function Login() {
-  const { login, user } = useAuth()
   const navigate = useNavigate()
   const [form, setForm] = useState({ email: '', password: '', role: 'customer' })
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const { login, user, getDashboardPath } = useAuth()
 
   useEffect(() => {
     if (user) navigate(user.role === 'transporter' ? '/dashboard' : '/transporters')
@@ -29,7 +29,7 @@ export default function Login() {
     setLoading(true)
 try {
   const u = await login(form.email, form.password, form.role)
-  navigate(u.role === 'transporter' ? '/dashboard' : '/customer-dashboard', { replace: true })
+navigate(getDashboardPath(u.role), { replace: true })
 } catch (err) {
   setError(err.message)
 } finally {

@@ -49,6 +49,7 @@ export default function Navbar() {
           {user?.role === 'customer' && navLink('/customer-dashboard', 'Dashboard')}
           {user?.role === 'customer' && navLink('/bookings', 'My bookings')}
           {user?.role === 'transporter' && navLink('/dashboard', 'Dashboard')}
+          {user?.role === 'admin' && navLink('/admin', 'Admin Panel')}
         </div>
 
         {/* Desktop auth */}

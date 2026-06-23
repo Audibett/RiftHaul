@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext'
 const cargoTypes = ['General', 'Agricultural', 'Electronics', 'Furniture', 'Building Materials', 'Perishables', 'Heavy Machinery']
 
 export default function Register() {
-  const { register, user } = useAuth()
+  const { register, user, getDashboardPath } = useAuth()
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
   const [form, setForm] = useState({
@@ -56,7 +56,7 @@ export default function Register() {
   setLoading(true)
   try {
     const u = await register(form)
-    navigate(u.role === 'transporter' ? '/dashboard' : '/customer-dashboard', { replace: true })
+    navigate(getDashboardPath(u.role))
   } catch (err) {
     setError(err.message)
     setStep(1) // send back to step 1 on error
