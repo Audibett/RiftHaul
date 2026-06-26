@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Truck, Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { supabase } from '../lib/supabase'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -19,6 +20,17 @@ export default function Login() {
     setForm({ ...form, [e.target.name]: e.target.value })
     if (error) setError('')
   }
+
+  async function handleGoogleSignIn() {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: `${window.location.origin}/auth/callback`,
+    },
+  })
+  if (error) setError(error.message)
+}
+
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -125,7 +137,9 @@ navigate(getDashboardPath(u.role), { replace: true })
             <div>
               <div className="flex items-center justify-between mb-1.5">
                 <label className="text-sm font-medium text-gray-700">Password</label>
-                <a href="#" className="text-xs text-brand-orange hover:underline">Forgot password?</a>
+                <Link to="/forgot-password" className="text-xs text-brand-orange hover:underline">
+                     Forgot password?
+                       </Link>
               </div>
               <div className="relative">
                 <input
@@ -162,12 +176,36 @@ navigate(getDashboardPath(u.role), { replace: true })
             </button>
           </form>
 
-          <p className="text-center text-sm text-gray-500 mt-6">
-            Don't have an account?{' '}
-            <Link to="/register" className="text-brand-orange font-semibold hover:underline">
-              Sign up free
-            </Link>
-          </p>
+<div className="relative my-5">
+  <div className="absolute inset-0 flex items-center">
+    <div className="w-full border-t border-gray-200" />
+  </div>
+  <div className="relative flex justify-center text-xs">
+    <span className="bg-gray-50 px-3 text-gray-400">
+      or continue with
+    </span>
+  </div>
+</div>
+
+<button
+  type="button"
+  onClick={handleGoogleSignIn}
+  className="w-full flex items-center justify-center gap-3 border border-gray-200 bg-white hover:bg-gray-50 text-gray-700 font-semibold py-3 rounded-xl text-sm transition"
+>
+  <img
+    src="https://www.google.com/favicon.ico"
+    alt="Google"
+    className="w-4 h-4"
+  />
+  Continue with Google
+</button>
+
+<p className="text-center text-sm text-gray-500 mt-6">
+  Don't have an account?{' '}
+  <Link to="/register" className="text-brand-orange font-semibold hover:underline">
+    Sign up free
+  </Link>
+</p>
         </div>
       </div>
     </div>

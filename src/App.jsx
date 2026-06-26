@@ -13,6 +13,9 @@ import CustomerDashboard from './pages/CustomerDashboard'
 import TransporterDashboard from './pages/TransporterDashboard'
 import { Truck } from 'lucide-react'
 import PaymentCallback from './pages/PaymentCallback'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword  from './pages/ResetPassword'
+
 
 function App() {
   const { loading } = useAuth()
@@ -43,6 +46,8 @@ function App() {
         <Route path="/register"     element={<Register />} />
         <Route path="/transporters" element={<Transporters />} />
         <Route path="/payment/callback" element={<PaymentCallback />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password"  element={<ResetPassword />} />
 
         {/* Customer only */}
         <Route path="/customer-dashboard" element={
