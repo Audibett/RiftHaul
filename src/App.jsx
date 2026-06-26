@@ -15,7 +15,7 @@ import { Truck } from 'lucide-react'
 import PaymentCallback from './pages/PaymentCallback'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword  from './pages/ResetPassword'
-
+import AuthCallback from './pages/AuthCallback'
 
 function App() {
   const { loading } = useAuth()
@@ -48,6 +48,7 @@ function App() {
         <Route path="/payment/callback" element={<PaymentCallback />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password"  element={<ResetPassword />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
 
         {/* Customer only */}
         <Route path="/customer-dashboard" element={
