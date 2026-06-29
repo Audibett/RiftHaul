@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Truck, LogOut, Menu, X, Package, LayoutDashboard, Search } from 'lucide-react'
+import { Truck, LogOut, Menu, X, Package, LayoutDashboard, Search, } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import { ..., Settings } from 'lucide-react'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
@@ -60,7 +61,12 @@ export default function Navbar() {
                 <div className="w-6 h-6 rounded-full bg-brand-orange flex items-center justify-center text-white font-bold text-xs">
                   {user.name.charAt(0)}
                 </div>
-                <span className="text-white text-sm font-medium">{user.name.split(' ')[0]}</span>
+                <Link
+                to="/settings"
+                 className="text-white text-sm font-medium hover:text-brand-orange transition"
+                     >
+                {user.name.split(' ')[0]}
+                </Link>
                 <span className="text-xs text-gray-500 capitalize border-l border-white/10 pl-2.5">{user.role}</span>
               </div>
               <button
@@ -138,6 +144,7 @@ export default function Navbar() {
             <div className="flex-1 px-4 py-4 space-y-1">
               {[
                 { to: '/transporters', label: 'Find Transporters', icon: <Search className="w-4 h-4" /> },
+                 { to: '/settings', label: 'Settings', icon: <Settings className="w-4 h-4" /> },
                 ...(user?.role === 'customer' ? [{ to: '/bookings', label: 'My Bookings', icon: <Package className="w-4 h-4" /> }] : []),
                 ...(user?.role === 'transporter' ? [{ to: '/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> }] : []),
               ].map(({ to, label, icon }) => (
