@@ -10,6 +10,7 @@ const adminRoutes       = require('./src/routes/admin')
 const paymentRoutes     = require('./src/routes/payments')
 const rateLimit         = require('express-rate-limit')
 const profileRoutes     = require('./src/routes/profile')
+const ratingRoutes      = require('./src/routes/ratings')
 
 const app  = express()
 const PORT = process.env.PORT || 4000
@@ -41,6 +42,7 @@ app.use(cors(corsOptions))          // handles all routes including OPTIONS
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+
 // ── Rate limiting ──────────────────────────────────────────────────
 
 // General limiter — all routes
@@ -67,6 +69,7 @@ app.use(generalLimiter)
 // Apply strict limiter to auth routes specifically
 app.use('/api/auth/login',    authLimiter)
 app.use('/api/auth/register', authLimiter)
+app.use('/api/ratings', ratingRoutes)
 
 
 // ── Health check ──────────────────────────────────────────────────

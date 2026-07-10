@@ -6,6 +6,9 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useEffect } from 'react'
+import RateBookingModal from '../components/RateBookingModal'
+import { api } from '../utils/api'
+import { ..., Star, CheckCircle } from 'lucide-react'
 
 const STATUS = {
   pending:   { label: 'Pending',    bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', dot: 'bg-yellow-400', bar: 'bg-yellow-400' },
@@ -24,7 +27,19 @@ const TABS = [
 
 function BookingCard({ booking, onCancel }) {
   const [open, setOpen] = useState(false)
+  const [showRateModal, setShowRateModal] = useState(false)
+  const [hasRated, setHasRated]           = useState(false)
+  const [ratingLoading, setRatingLoading] = useState(false)
   const s = STATUS[booking.status] || STATUS.pending
+  
+  useEffect(() => {
+  if (open && booking.status === 'completed') {
+    api
+      .get(`/api/ratings/check/${booking.id}`)
+      .then((res) => setHasRated(res.hasRated))
+      .catch(console.error)
+  }
+}, [open, booking])
 
   return (
     <div className={`bg-white rounded-2xl border ${s.border} overflow-hidden transition-shadow hover:shadow-sm`}>
@@ -111,13 +126,39 @@ function BookingCard({ booking, onCancel }) {
               </button>
             )}
             {booking.status === 'completed' && (
-              <Link
-                to="/transporters"
-                className="flex items-center justify-center gap-1.5 w-full mt-2 bg-brand-orange hover:bg-orange-500 text-white font-semibold py-2.5 rounded-xl text-xs transition"
-              >
-                Book again <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            )}
+  <div className="flex gap-2 mt-2">
+    {!hasRated ? (
+      <button
+        onClick={() => setShowRateModal(true)}
+        disabled={ratingLoading}
+        className="flex-1 flex items-center justify-center gap-1.5 bg-yellow-50 hover:bg-yellow-100 border border-yellow-200 text-yellow-700 font-semibold py-2.5 rounded-xl text-xs transition"
+      >
+        <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
+        Rate this delivery
+      </button>
+    ) : (
+      <div className="flex-1 flex items-center justify-center gap-1.5 bg-green-50 border border-green-200 text-green-600 font-semibold py-2.5 rounded-xl text-xs">
+        <CheckCircle className="w-3.5 h-3.5" />
+        Rated
+      </div>
+    )}
+
+    <Link
+      to="/transporters"
+      className="flex-1 text-center bg-brand-orange hover:bg-orange-500 text-white font-semibold py-2.5 rounded-xl text-xs transition"
+    >
+      Book again
+    </Link>
+  </div>
+)}
+
+{showRateModal && (
+  <RateBookingModal
+    booking={booking}
+    onClose={() => setShowRateModal(false)}
+    onSuccess={() => setHasRated(true)}
+  />
+)}
           </div>
         )}
       </div>
@@ -129,6 +170,7 @@ export default function Bookings() {
   const { user, bookings, fetchBookings, updateBookingStatus } = useAuth()
   const [activeTab, setActiveTab] = useState('all')
   const [pageLoading, setPageLoading] = useState(true)
+  
 
   useEffect(() => {
   if (!user) {
