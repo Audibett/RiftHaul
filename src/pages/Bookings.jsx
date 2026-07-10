@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Package, Truck, Calendar, ChevronDown, ChevronUp,
-  Clock, CheckCircle, XCircle, Plus, AlertCircle, ArrowRight
+  Clock, CheckCircle, XCircle, Plus, AlertCircle, ArrowRight, star
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { useEffect } from 'react'
 import RateBookingModal from '../components/RateBookingModal'
 import { api } from '../utils/api'
-import { ..., Star, CheckCircle } from 'lucide-react'
+
 
 const STATUS = {
   pending:   { label: 'Pending',    bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', dot: 'bg-yellow-400', bar: 'bg-yellow-400' },
