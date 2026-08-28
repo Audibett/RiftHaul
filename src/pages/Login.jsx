@@ -58,14 +58,14 @@ navigate(getDashboardPath(u.role), { replace: true })
           <div className="w-8 h-8 bg-brand-orange rounded-lg flex items-center justify-center">
             <Truck className="w-4 h-4 text-white" />
           </div>
-          <span className="font-extrabold text-white text-lg">Rift<span className="text-brand-orange">Haul</span></span>
+          <span className="font-extrabold text-white text-lg">Fleet<span className="text-brand-orange">Nova</span></span>
         </Link>
         <div>
           <h2 className="text-3xl font-extrabold text-white leading-tight mb-4">
             Move cargo smarter across the Rift Valley.
           </h2>
           <p className="text-gray-400 text-sm leading-relaxed">
-            Join thousands of businesses that trust RiftHaul to connect them with reliable transporters — fast.
+            Join thousands of businesses that trust FleetNova to connect them with reliable transporters — fast.
           </p>
           <div className="mt-8 space-y-3">
             {['500+ verified transporters', 'Transparent pricing', 'Book in under 3 minutes'].map((item) => (
@@ -76,7 +76,7 @@ navigate(getDashboardPath(u.role), { replace: true })
             ))}
           </div>
         </div>
-        <p className="text-gray-600 text-xs">© 2026 RiftHaul</p>
+        <p className="text-gray-600 text-xs">© 2026 FleetNova</p>
       </div>
 
       {/* Right panel — form */}
@@ -88,7 +88,7 @@ navigate(getDashboardPath(u.role), { replace: true })
             <div className="w-8 h-8 bg-brand-orange rounded-lg flex items-center justify-center">
               <Truck className="w-4 h-4 text-white" />
             </div>
-            <span className="font-extrabold text-brand-dark text-lg">Rift<span className="text-brand-orange">Haul</span></span>
+            <span className="font-extrabold text-brand-dark text-lg">Fleet<span className="text-brand-orange">Nova</span></span>
           </Link>
 
           <h1 className="text-2xl font-extrabold text-brand-dark mb-1">Welcome back</h1>

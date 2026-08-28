@@ -91,7 +91,7 @@ export default function Home() {
               <span className="text-brand-orange">without the phone calls.</span>
             </h1>
             <p className="text-gray-400 text-lg md:text-xl leading-relaxed mb-10 max-w-xl">
-              RiftHaul connects Eldoret businesses with trusted local truck operators.
+              FleetNova connects Eldoret businesses with trusted local truck operators.
               Search, compare, and book verified transporters in minutes.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
@@ -162,7 +162,7 @@ export default function Home() {
       <section className="bg-gray-50 py-20 px-6">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-14">
-            <p className="text-brand-orange text-sm font-semibold uppercase tracking-widest mb-2">Why RiftHaul</p>
+            <p className="text-brand-orange text-sm font-semibold uppercase tracking-widest mb-2">Why FleetNova</p>
             <h2 className="text-3xl md:text-4xl font-extrabold text-brand-dark">Built for Rift Valley businesses</h2>
           </div>
           <div className="grid sm:grid-cols-2 gap-5">
@@ -219,7 +219,7 @@ export default function Home() {
             Ready to move your cargo?
           </h2>
           <p className="text-gray-400 mb-8 leading-relaxed">
-            Join hundreds of Eldoret businesses already using RiftHaul.
+            Join hundreds of Eldoret businesses already using FleetNova.
             Sign up free — no subscription, no commitment.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -244,9 +244,9 @@ export default function Home() {
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Truck className="text-brand-orange w-5 h-5" />
-            <span className="font-extrabold text-white">Rift<span className="text-brand-orange">Haul</span></span>
+            <span className="font-extrabold text-white">Fleet<span className="text-brand-orange">Nova</span></span>
           </div>
-          <p className="text-gray-500 text-sm">© 2026 RiftHaul. Connecting Eldoret's cargo network.</p>
+          <p className="text-gray-500 text-sm">© 2026 FleetNova. Connecting Eldoret's cargo network.</p>
           <div className="flex gap-5 text-sm text-gray-500">
             <a href="#" className="hover:text-white transition">Privacy</a>
             <a href="#" className="hover:text-white transition">Terms</a>
