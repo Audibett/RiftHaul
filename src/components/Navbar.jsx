@@ -48,7 +48,7 @@ export default function Navbar() {
             <Truck className="w-4 h-4 text-white" />
           </div>
           <span className="font-extrabold text-white text-lg tracking-tight">
-            Rift<span className="text-brand-orange">Haul</span>
+            Fleet<span className="text-brand-orange">Nova</span>
           </span>
         </Link>
 
@@ -126,7 +126,7 @@ export default function Navbar() {
                 <div className="w-7 h-7 bg-brand-orange rounded-lg flex items-center justify-center">
                   <Truck className="w-3.5 h-3.5 text-white" />
                 </div>
-                <span className="font-extrabold text-white">Rift<span className="text-brand-orange">Haul</span></span>
+                <span className="font-extrabold text-white">Fleet<span className="text-brand-orange">Nova</span></span>
               </div>
               <button onClick={close} className="text-gray-500 hover:text-white">
                 <X className="w-5 h-5" />

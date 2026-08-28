@@ -30,7 +30,7 @@ const features = [
   {
     icon: <Shield className="w-5 h-5" />,
     title: 'Verified drivers only',
-    desc: 'Every transporter on RiftHaul is licensed, vetted, and reviewed by real customers before they appear on the platform.',
+    desc: 'Every transporter on FleetNova is licensed, vetted, and reviewed by real customers before they appear on the platform.',
   },
   {
     icon: <Package className="w-5 h-5" />,
