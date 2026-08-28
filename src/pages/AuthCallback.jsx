@@ -66,7 +66,7 @@ export default function AuthCallback() {
         <div className="flex items-center gap-2 justify-center">
           <Truck className="w-5 h-5 text-brand-orange" />
           <span className="font-extrabold text-brand-dark text-lg">
-            Rift<span className="text-brand-orange">Haul</span>
+            Fleet<span className="text-brand-orange">Nova</span>
           </span>
         </div>
         <p className="text-gray-400 text-sm mt-2">Completing sign in...</p>

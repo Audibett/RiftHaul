@@ -33,7 +33,7 @@ export default function ForgotPassword() {
             <Truck className="w-4 h-4 text-white" />
           </div>
           <span className="font-extrabold text-brand-dark text-lg">
-            Rift<span className="text-brand-orange">Haul</span>
+            Fleet<span className="text-brand-orange">Nova</span>
           </span>
         </Link>
 
