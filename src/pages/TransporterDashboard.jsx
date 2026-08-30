@@ -208,8 +208,15 @@ async function toggleAvailability() {
   }
 }
 
-if (pageLoading) {
-  return <div className="p-10 text-center">Loading...</div>
+if (pageLoading || !profile) {
+  return (
+    <div className="min-h-[70vh] flex items-center justify-center">
+      <div className="text-center">
+        <div className="w-10 h-10 border-4 border-brand-orange border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-gray-400 text-sm">Loading dashboard...</p>
+      </div>
+    </div>
+  )
 }
 
   const visible = jobs.filter((j) => {
@@ -256,13 +263,13 @@ if (pageLoading) {
             <h1 className="text-white font-extrabold text-xl">{user.name}</h1>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1.5">
               <span className="text-gray-400 text-sm flex items-center gap-1.5">
-                <Truck className="w-3.5 h-3.5 text-brand-orange" />{profile.truck} · {profile.capacity}
+                <Truck className="w-3.5 h-3.5 text-brand-orange" />{profile?.truck} · {profile?.capacity}
               </span>
               <span className="text-gray-400 text-sm flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-brand-orange" />{profile.location}
               </span>
               <span className="text-yellow-400 text-sm flex items-center gap-1">
-                <Star className="w-3.5 h-3.5 fill-yellow-400" />{profile.rating} · {profile.trips} trips
+                <Star className="w-3.5 h-3.5 fill-yellow-400" />{profile?.rating} · {profile.trips} trips
               </span>
             </div>
           </div>
