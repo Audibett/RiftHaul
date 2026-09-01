@@ -340,7 +340,7 @@ export default function Settings() {
         </form>
       )}
 
-      {/* ── Truck Details Tab ──────────────────────────────────── */}
+      {/* ── Truck Details Tab one ──────────────────────────────────── */}
       {activeTab === 'Truck Details' && (
         <form onSubmit={saveTruck} className="bg-white rounded-2xl border border-gray-100 p-6 space-y-5">
           <h2 className="font-bold text-brand-dark text-lg">Truck Details</h2>
