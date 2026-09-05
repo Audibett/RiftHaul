@@ -30,6 +30,7 @@ export default function SEO({
       <meta name="keywords"           content={seoKeywords} />
       <meta name="author"             content="FleetNova Logistics" />
       <meta name="robots"             content="index, follow" />
+      <meta name="google-site-verification" content="google-site-verification=k3of0GqRlh6DpW1m3cDNd1M2S6-9mNma53SrB0sVvJY" />
       <link rel="canonical"           href={seoUrl} />
 
       {/* Open Graph — controls WhatsApp/Facebook/LinkedIn preview */}
