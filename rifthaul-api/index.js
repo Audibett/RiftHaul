@@ -19,6 +19,8 @@ const PORT = process.env.PORT || 4000
 const allowedOrigins = [
   'http://localhost:5173',
   'https://rift-haul.vercel.app',
+  'https://fleetnova.co.ke',
+  'https://www.fleetnova.co.ke',
   process.env.CLIENT_URL,
 ].filter(Boolean)
 
@@ -26,7 +28,7 @@ const corsOptions = {
   origin: function (origin, callback) {
     if (!origin) return callback(null, true)
     const isAllowed = allowedOrigins.some(
-      (o) => origin === o || origin.startsWith(o)
+      (o) => origin === o 
     )
     if (isAllowed) return callback(null, true)
     console.log('CORS blocked for:', origin)

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Truck, Eye, EyeOff, ArrowRight, Check } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
+import SEO from '../components/SEO'
 
 const cargoTypes = ['General', 'Agricultural', 'Electronics', 'Furniture', 'Building Materials', 'Perishables', 'Heavy Machinery']
 
@@ -78,6 +79,13 @@ export default function Register() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+
+      <SEO
+  title="Create a Free Account"
+  description="Join FleetNova Logistics for free. Book verified transporters as a customer or register your truck and start earning as a transporter in Eldoret and across Kenya."
+  url="https://fleetnova.co.ke/register"
+  keywords="register FleetNova, join cargo platform Kenya, truck driver registration Eldoret, customer registration logistics Kenya"
+/>
 
       {/* Left panel */}
       <div className="hidden lg:flex flex-col justify-between w-96 bg-brand-dark px-10 py-12 shrink-0">

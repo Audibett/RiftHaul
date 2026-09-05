@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Search, Star, MapPin, Package, Truck, SlidersHorizontal, X } from 'lucide-react'
 import { api } from '../utils/api'
+import SEO from '../components/SEO'
 
 const cargoTypes = ['General', 'Agricultural', 'Electronics', 'Furniture', 'Building Materials', 'Perishables', 'Heavy Machinery']
 const capacities = ['All', '1-2 tonnes', '3-5 tonnes', '10+ tonnes']
@@ -18,6 +19,13 @@ function matchesCapacity(t, filter) {
 function TransporterCard({ t }) {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col overflow-hidden">
+
+      <SEO
+  title="Find Verified Transporters in Eldoret"
+  description="Browse and book verified truck operators in Eldoret and across the Rift Valley. Compare rates, read reviews, and book instantly."
+  url="https://fleetnova.co.ke/transporters"
+  keywords="transporters Eldoret, truck operators Kenya, hire truck Eldoret, cargo drivers Kenya, book transporter"
+/>
 
       {/* Header */}
       <div className="bg-gradient-to-br from-brand-dark to-gray-800 px-5 py-4 flex items-center justify-between">

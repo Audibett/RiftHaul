@@ -5,6 +5,7 @@ import {
   Clock, CheckCircle, TrendingUp, MapPin, AlertCircle
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
+import SEO from '../components/SEO'
 
 const STATUS = {
   pending:   { label: 'Pending',    bg: 'bg-yellow-50', text: 'text-yellow-700', dot: 'bg-yellow-400' },
@@ -17,6 +18,12 @@ function MiniBookingCard({ booking }) {
   const s = STATUS[booking.status] || STATUS.pending
   return (
     <div className="bg-white rounded-2xl border border-gray-100 p-4 hover:shadow-sm transition">
+
+      <SEO
+  title="My Dashboard"
+  description="Manage your cargo bookings, track shipments, and find transporters on FleetNova Logistics."
+  url="https://fleetnova.co.ke/customer-dashboard"
+/>
       <div className="flex items-start justify-between mb-3">
         <p className="font-bold text-brand-dark text-sm font-mono">{booking.id}</p>
         <span className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full ${s.bg} ${s.text}`}>

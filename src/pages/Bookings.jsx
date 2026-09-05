@@ -18,6 +18,7 @@ import { useAuth } from '../context/AuthContext'
 import { useEffect } from 'react'
 import RateBookingModal from '../components/RateBookingModal'
 import { api } from '../utils/api'
+import SEO from '../components/SEO'
 
 
 const STATUS = {
@@ -57,6 +58,12 @@ function BookingCard({ booking, onCancel }) {
       <div className={`h-1 ${s.bar}`} />
 
       <div className="p-5">
+
+        <SEO
+  title="My Bookings"
+  description="View and manage all your cargo bookings and shipments on FleetNova Logistics."
+  url="https://fleetnova.co.ke/bookings"
+/>
         {/* Top row */}
         <div className="flex items-start justify-between mb-4">
           <div>

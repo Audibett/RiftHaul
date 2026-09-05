@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Truck, Eye, EyeOff, ArrowRight } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabase'
+import SEO from '../components/SEO'
 
 export default function Login() {
   const navigate = useNavigate()
@@ -51,6 +52,12 @@ navigate(getDashboardPath(u.role), { replace: true })
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
+
+      <SEO
+  title="Sign In to Your Account"
+  description="Sign in to your FleetNova Logistics account to manage your bookings, track shipments, and connect with transporters across Kenya."
+  url="https://fleetnova.co.ke/login"
+/>
 
       {/* Left panel — branding (desktop) */}
       <div className="hidden lg:flex flex-col justify-between w-96 bg-brand-dark px-10 py-12 shrink-0">

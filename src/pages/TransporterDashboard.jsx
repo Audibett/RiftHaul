@@ -8,6 +8,7 @@ import {
 import { useAuth } from '../context/AuthContext'
 import { api } from '../utils/api'
 import { useEffect } from 'react'
+import SEO from '../components/SEO'
 
 const STATUS = {
   pending:   { label: 'New Request', bg: 'bg-yellow-50', text: 'text-yellow-700', border: 'border-yellow-200', bar: 'bg-yellow-400' },
@@ -31,6 +32,12 @@ function JobCard({ job, onAccept, onComplete, onDecline }) {
     <div className={`bg-white rounded-2xl border ${s.border} overflow-hidden`}>
       <div className={`h-1 ${s.bar}`} />
       <div className="p-5">
+
+        <SEO
+  title="Transporter Dashboard"
+  description="Manage your job requests, track your earnings, and update your availability on FleetNova Logistics."
+  url="https://fleetnova.co.ke/dashboard"
+/>
 
         {/* Top row */}
         <div className="flex items-start justify-between mb-4">

@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Truck, Package, Star, Shield, Clock, MapPin, ArrowRight, CheckCircle } from 'lucide-react'
+import SEO from '../components/SEO'
+import { Helmet } from 'react-helmet-async'
 
 const stats = [
   { value: '500+', label: 'Verified Transporters' },
@@ -73,6 +75,44 @@ const testimonials = [
 export default function Home() {
   return (
     <div className="font-sans text-gray-800">
+
+      <SEO
+  title="Cargo Transport & Truck Hire in Eldoret"
+  description="FleetNova Logistics connects Eldoret businesses with verified truck operators. Book reliable cargo transport across Kenya in minutes. 500+ transporters available."
+  url="https://fleetnova.co.ke"
+  keywords="cargo transport Eldoret, truck hire Kenya, logistics Eldoret, freight transport Kenya, cargo booking"
+/>
+
+<Helmet>
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "FleetNova Logistics",
+      "description": "Cargo transport marketplace connecting businesses with verified truck operators in Eldoret and across Kenya.",
+      "url": "https://fleetnova.co.ke",
+      "telephone": "+254712345678",
+      "email": "peaklinelogistics@outlook.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Eldoret",
+        "addressRegion": "Uasin Gishu County",
+        "addressCountry": "KE"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "0.5143",
+        "longitude": "35.2698"
+      },
+      "openingHours": "Mo-Su 00:00-23:59",
+      "priceRange": "KES",
+      "serviceArea": {
+        "@type": "Country",
+        "name": "Kenya"
+      }
+    })}
+  </script>
+</Helmet>
 
       {/* ── Hero ──────────────────────────────────────────────── */}
       <section className="relative bg-brand-dark overflow-hidden">

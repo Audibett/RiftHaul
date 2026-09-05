@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../utils/api'
+import SEO from '../components/SEO'
 
 const cargoTypes = [
   'General', 'Agricultural', 'Electronics',
@@ -194,6 +195,12 @@ export default function Settings() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-10">
+
+      <SEO
+  title="Account Settings"
+  description="Manage your FleetNova Logistics account settings, update your profile, and change your password."
+  url="https://fleetnova.co.ke/settings"
+/>
 
       {/* Header */}
       <div className="mb-8">
